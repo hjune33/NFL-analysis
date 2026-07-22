@@ -1,9 +1,20 @@
 import nfl_data_py as nfl
 
-# 24, 25 시즌 경기 데이터 불러오기
 games = nfl.import_schedules([2024, 2025])
 
-# 데이터가 확인
-print(games.shape)      # (행 개수, 열 개수)
-print(games.columns)    # 어떤 컬럼들이 있는지
-print(games.head())     # 맨 위 5줄 미리보기
+# 정규시즌만 (플레이오프 제외)
+reg = games[games['game_type'] == 'REG']
+
+print("총 경기 수:", len(reg))
+print(reg[['home_team', 'away_team', 'home_score', 'away_score', 'result']].head())
+
+home_wins = len(reg[reg['result'] > 0])
+away_wins = len(reg[reg['result'] < 0])
+ties = len(reg[reg['result'] == 0])
+
+print("홈 승:", home_wins)
+print("원정 승:", away_wins)
+print("무승부:", ties)
+print("홈 승률:", round(home_wins / len(reg) * 100, 1), "%")
+print("홈 팀 승리 평균 득점:", round(reg[reg['result'] > 0]['result'].mean(), 1))
+print("홈 팀 패배 평균 실점:", round(reg[reg['result'] < 0]['result'].mean(), 1))
