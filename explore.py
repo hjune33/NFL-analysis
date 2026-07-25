@@ -28,18 +28,30 @@ team_stats = team_stats.sort_values('wins', ascending=False)
 pbp = nfl.import_pbp_data([2025])
 turnovers = pbp.groupby(['game_id', 'posteam'])[['fumble_lost', 'interception']].sum()
 turnovers['total'] = turnovers['fumble_lost'] + turnovers['interception']
+turnovers = turnovers.reset_index()
+
+# ===== 5. 승패 팀 관점 변환 =====
+home = reg[['game_id', 'home_team', 'result']].copy()
+home = home.rename(columns={'home_team': 'team'})
+home['won'] = home['result'] > 0
+
+away = reg[['game_id', 'away_team', 'result']].copy()
+away = away.rename(columns={'away_team': 'team'})
+away['won'] = away['result'] < 0
+
+team_results = pd.concat([home, away])
+
+# ===== 6. 턴오버 + 승패 결합 분석 =====
+merged = pd.merge(turnovers, team_results,
+         left_on=['game_id', 'posteam'],
+         right_on=['game_id', 'team'])
+
+turnovers_effect = merged.groupby('won')['total'].mean()
+turnovers_relation = merged.groupby('total')['won'].mean()
 
 # ===== 출력 =====
-# print("홈 승:", home_wins)
-# print("원정 승:", away_wins)
-# print("무승부:", ties)
-# print("홈 승률:", round(home_wins / len(reg) * 100, 1), "%")
-# print("홈 팀 승리 평균 득점:", round(reg[reg['result'] > 0]['result'].mean(), 1))
-# print("홈 팀 패배 평균 실점:", round(reg[reg['result'] < 0]['result'].mean(), 1))
-# print("홈 팀 평균 득점:", round(team_avg_score, 1))
-# print("홈 팀 평균 실점:", round(team_avg_con_score, 1))
-# print("팀 별 득실 차 ", round(team_margin, 1))
-# print("홈 팀 평균 승:", team_avg_win)
-# print(team_stats)
-print(turnovers)
-print(turnovers.sort_values('total', ascending=False).head(10))
+print("[턴오버와 승패]")
+print(turnovers_effect)
+print()
+print("[턴오버 수별 승률]")
+print(turnovers_relation)
