@@ -42,16 +42,43 @@ away['won'] = away['result'] < 0
 team_results = pd.concat([home, away])
 
 # ===== 6. 턴오버 + 승패 결합 분석 =====
-merged = pd.merge(turnovers, team_results,
+merged_turnover = pd.merge(turnovers, team_results,
          left_on=['game_id', 'posteam'],
          right_on=['game_id', 'team'])
 
-turnovers_effect = merged.groupby('won')['total'].mean()
-turnovers_relation = merged.groupby('total')['won'].mean()
+turnovers_effect = merged_turnover.groupby('won')['total'].mean()
+turnovers_relation = merged_turnover.groupby('total')['won'].mean()
+
+# ===== 7. 패스 야드 집계 =====
+pass_yards = pbp.groupby(['game_id', 'posteam'])[['passing_yards']].sum()
+pass_yards = pass_yards.reset_index()
+
+# ===== 8. 패싱 야드 + 승패 결합 분석 =====
+merged_passyard = pd.merge(pass_yards, team_results,
+                           left_on=['game_id', 'posteam'],
+                           right_on=['game_id', 'team'])
+passyards_effect = merged_passyard.groupby('won')['passing_yards'].mean()
+
+merged_passyard['yards'] = pd.cut(merged_passyard['passing_yards'],
+                                 bins = [0, 176, 221, 272, 500], 
+                                 labels = ['~176', '176~221', '221~272', '272+'])
+passyards_relation = merged_passyard.groupby('yards')['won'].mean()
+
+# ===== 승패 영향 요약 =====
+turnovers_summary = pd.DataFrame({
+    'win_rate': merged_turnover.groupby('total')['won'].mean(),
+    'matches': merged_turnover.groupby('total').size()
+})
+
+passyard_summary = pd.DataFrame({
+    'win_rate': merged_passyard.groupby('yards')['won'].mean(),
+    'matches': merged_passyard.groupby('yards').size()
+})
+
 
 # ===== 출력 =====
-print("[턴오버와 승패]")
-print(turnovers_effect)
+print("[턴오버 영향력]")
+print(turnovers_summary)
 print()
-print("[턴오버 수별 승률]")
-print(turnovers_relation)
+print("[패스야드 영향력]")
+print(passyard_summary)
