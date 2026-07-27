@@ -74,6 +74,23 @@ merged_penalty = pd.merge(penalties, team_results,
                            right_on=['game_id', 'team'])
 penalty_effect = merged_penalty.groupby('won')['penalty'].mean()
 
+# ===== 11. 3rd down 전환율 집계 =====
+third_down = pbp.groupby(['game_id', 'posteam'])[['third_down_converted', 'third_down_failed']].sum()
+third_down['attempts'] = third_down['third_down_converted'] + third_down['third_down_failed']
+third_down['rate'] = third_down['third_down_converted'] / third_down['attempts']
+third_down = third_down.reset_index()
+
+# ===== 12. 3rd down 전환율 + 승패 결합 분석 =====
+merged_thirddown = pd.merge(third_down, team_results,
+                           left_on=['game_id', 'posteam'],
+                           right_on=['game_id', 'team'])
+thirddown_effect = merged_thirddown.groupby('won')['rate'].mean()
+
+merged_thirddown['rate_bin'] = pd.cut(merged_thirddown['rate'],
+                                 bins = [0, 0.30, 0.385, 0.47, 1.0],
+                                 labels = ['~30%', '30~38%', '38~47%', '47%+'])
+thirddown_relation = merged_thirddown.groupby('rate_bin')['won'].mean()
+
 # ===== 승패 영향 요약 =====
 turnovers_summary = pd.DataFrame({
     'win_rate': merged_turnover.groupby('total')['won'].mean(),
@@ -90,6 +107,34 @@ penalty_summary = pd.DataFrame({
     'matches': merged_penalty.groupby('penalty').size()
 })
 
+thirddown_summary = pd.DataFrame({
+    'win_rate': merged_thirddown.groupby('rate_bin')['won'].mean(),
+    'matches': merged_thirddown.groupby('rate_bin').size()
+})
+
+# ===== 상관관계 분석 =====
+factors = team_results.merge(turnovers[['game_id', 'posteam', 'total']],
+                             left_on=['game_id', 'team'],
+                             right_on=['game_id', 'posteam'])
+
+factors = factors.merge(pass_yards[['game_id', 'posteam', 'passing_yards']],
+                        left_on=['game_id', 'team'],
+                        right_on=['game_id', 'posteam'])
+
+factors = factors.merge(penalties[['game_id', 'penalty_team', 'penalty']],
+                        left_on=['game_id', 'team'],
+                        right_on=['game_id', 'penalty_team'])
+
+factors = factors.merge(third_down[['game_id', 'posteam', 'rate']],
+                        left_on=['game_id', 'team'],
+                        right_on=['game_id', 'posteam'])
+
+factors_clean = factors[['won', 'total', 'passing_yards', 'penalty', 'rate']]
+factors_clean = factors_clean.rename(columns={
+    'total': 'turnover',
+    'rate': 'third_down_rate'
+})
+
 # ===== 출력 =====
 print("[턴오버 영향력]")
 print(turnovers_summary)
@@ -97,5 +142,11 @@ print()
 print("[패스야드 영향력]")
 print(passyard_summary)
 print()
-print("[패널티 영향력]")
+print("[페널티 영향력]")
 print(penalty_summary)
+print()
+print("[3rd down 전환율]")
+print(thirddown_summary)
+print()
+print("[요인별 승패 상관계수]")
+print(factors_clean.corr()['won'])
