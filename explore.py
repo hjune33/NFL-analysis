@@ -1,10 +1,24 @@
 # ===== 1. 데이터 로드 =====
 import nfl_data_py as nfl
 import pandas as pd
+import sqlite3
+import os
+
+conn = sqlite3.connect('nfl.db')
+
+if os.path.exists('nfl.db'):
+    pbp = pd.read_sql('SELECT * FROM pbp', conn)
+else:
+    pbp = nfl.import_pbp_data([2025])
+    pbp.to_sql('pbp', conn, if_exists='replace', index=False)
+
 
 games = nfl.import_schedules([2024, 2025])
 # 정규시즌만 (플레이오프 제외)
 reg = games[games['game_type'] == 'REG']
+
+
+
 
 # ===== 2. 홈 어드밴티지 =====
 home_wins = len(reg[reg['result'] > 0])
@@ -36,7 +50,6 @@ away['won'] = away['result'] < 0
 team_results = pd.concat([home, away])
 
 # ===== 5. 턴오버 집계 =====
-pbp = nfl.import_pbp_data([2025])
 turnovers = pbp.groupby(['game_id', 'posteam'])[['fumble_lost', 'interception']].sum()
 turnovers['total'] = turnovers['fumble_lost'] + turnovers['interception']
 turnovers = turnovers.reset_index()

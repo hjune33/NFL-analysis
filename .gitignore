@@ -216,3 +216,6 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# 로컬 데이터베이스 (재생성 가능, 용량 큼)
+*.db
