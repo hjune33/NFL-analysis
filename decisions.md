@@ -19,3 +19,9 @@
 ## 성능·구조
 - SQLite 캐싱(nfl.db) 도입: pbp 데이터를 매번 다운로드하던 것을 로컬 DB에 저장 후 재사용. os.path.exists로 파일 유무 판단 → 있으면 read_sql, 없으면 다운로드+to_sql
 - nfl.db를 .gitignore(*.db)로 제외한 이유: 용량이 크고(185MB) 코드로 재생성 가능하므로 git 관리 불필요 (venv 제외와 같은 논리)
+
+## 시각화
+- bar chart를 택한 이유: turnovers_summary·thirddown_summary가 이미 값/구간별로 win_rate를 집계해둔 요약 데이터라, 카테고리 간 비교엔 막대그래프가 적합 
+- plt.figure()로 새 figure를 명시한 이유: matplotlib은 이전 plt.bar 상태(현재 figure)를 이어받으므로, 새로 선언하지 않으면 두 그래프가 한 figure에 겹쳐 그려짐
+- plt.show() 대신 savefig 사용한 이유: 스크립트 실행(로컬 배치) 환경이라 화면 출력 대신 파일로 저장해 README·문서에 바로 첨부 가능하게 함
+- 파일명을 `{feature}_winrate.png` 형식으로 통일한 이유: 이후 패스야드·페널티 등 시각화를 추가해도 네이밍 규칙이 일관되게 유지되도록

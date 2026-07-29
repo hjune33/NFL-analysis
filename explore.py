@@ -3,6 +3,7 @@ import nfl_data_py as nfl
 import pandas as pd
 import sqlite3
 import os
+import matplotlib.pyplot as plt
 
 conn = sqlite3.connect('nfl.db')
 
@@ -149,17 +150,32 @@ factors_clean = factors_clean.rename(columns={
 })
 
 # ===== 출력 =====
-print("[턴오버 영향력]")
-print(turnovers_summary)
-print()
-print("[패스야드 영향력]")
-print(passyard_summary)
-print()
-print("[페널티 영향력]")
-print(penalty_summary)
-print()
-print("[3rd down 전환율]")
-print(thirddown_summary)
-print()
-print("[요인별 승패 상관계수]")
-print(factors_clean.corr()['won'])
+# print("[턴오버 영향력]")
+# print(turnovers_summary)
+# print()
+# print("[패스야드 영향력]")
+# print(passyard_summary)
+# print()
+# print("[페널티 영향력]")
+# print(penalty_summary)
+# print()
+# print("[3rd down 전환율]")
+# print(thirddown_summary)
+# print()
+# print("[요인별 승패 상관계수]")
+# print(factors_clean.corr()['won'])
+
+
+# ===== 시각화 =====
+plt.bar(turnovers_summary.index, turnovers_summary['win_rate'])
+plt.title('Turnover vs Win Rate')
+plt.xlabel('Turnovers')
+plt.ylabel('Win Rate')
+plt.savefig('turnover_winrate.png')
+
+plt.figure()
+plt.bar(thirddown_summary.index, thirddown_summary['win_rate'])
+plt.title('Third-down conversion rate vs Win Rate')
+plt.xlabel('Third-down conversion rates')
+plt.ylabel('Win Rate')
+plt.savefig('thirddown_winrate.png')
