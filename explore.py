@@ -5,13 +5,15 @@ import sqlite3
 import os
 import matplotlib.pyplot as plt
 
+db_exists = os.path.exists('nfl.db')
 conn = sqlite3.connect('nfl.db')
 
-if os.path.exists('nfl.db'):
+if db_exists:
     pbp = pd.read_sql('SELECT * FROM pbp', conn)
 else:
     pbp = nfl.import_pbp_data([2025])
     pbp.to_sql('pbp', conn, if_exists='replace', index=False)
+
 
 
 games = nfl.import_schedules([2024, 2025])
@@ -88,6 +90,11 @@ merged_penalty = pd.merge(penalties, team_results,
                            right_on=['game_id', 'team'])
 penalty_effect = merged_penalty.groupby('won')['penalty'].mean()
 
+merged_penalty['penalty_bin'] = pd.cut(merged_penalty['penalty'],
+                                       bins=[0, 4, 6, 8, 20],
+                                       labels=['~4', '4~6', '6~8', '8+'])
+penalty_relation = merged_penalty.groupby('penalty_bin')['won'].mean()
+
 # ===== 11. 3rd down 전환율 집계 =====
 third_down = pbp.groupby(['game_id', 'posteam'])[['third_down_converted', 'third_down_failed']].sum()
 third_down['attempts'] = third_down['third_down_converted'] + third_down['third_down_failed']
@@ -117,8 +124,8 @@ passyard_summary = pd.DataFrame({
 })
 
 penalty_summary = pd.DataFrame({
-    'win_rate': merged_penalty.groupby('penalty')['won'].mean(),
-    'matches': merged_penalty.groupby('penalty').size()
+    'win_rate': merged_penalty.groupby('penalty_bin')['won'].mean(),
+    'matches': merged_penalty.groupby('penalty_bin').size()
 })
 
 thirddown_summary = pd.DataFrame({
@@ -179,3 +186,17 @@ plt.title('Third-down conversion rate vs Win Rate')
 plt.xlabel('Third-down conversion rates')
 plt.ylabel('Win Rate')
 plt.savefig('thirddown_winrate.png')
+
+plt.figure()
+plt.bar(passyards_relation.index, passyard_summary['win_rate'])
+plt.title('Passyard vs Win Rate')
+plt.xlabel('Passyards')
+plt.ylabel('Win Rate')
+plt.savefig('passyard_winrate.png')
+
+plt.figure()
+plt.bar(penalty_relation.index, penalty_summary['win_rate'])
+plt.title('Penalty vs Win Rate')
+plt.xlabel('Penalties')
+plt.ylabel('Win Rate')
+plt.savefig('Penalty_winrate.png')
