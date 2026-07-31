@@ -156,6 +156,8 @@ factors_clean = factors_clean.rename(columns={
     'rate': 'third_down_rate'
 })
 
+correlations = factors_clean.corr()['won'].drop('won')
+
 # ===== 출력 =====
 # print("[턴오버 영향력]")
 # print(turnovers_summary)
@@ -171,7 +173,7 @@ factors_clean = factors_clean.rename(columns={
 # print()
 # print("[요인별 승패 상관계수]")
 # print(factors_clean.corr()['won'])
-
+print(correlations)
 
 # ===== 시각화 =====
 plt.bar(turnovers_summary.index, turnovers_summary['win_rate'])
@@ -200,3 +202,10 @@ plt.title('Penalty vs Win Rate')
 plt.xlabel('Penalties')
 plt.ylabel('Win Rate')
 plt.savefig('penalty_winrate.png')
+
+plt.figure()
+plt.bar(correlations.index, correlations.values)
+plt.title('Correlation with Win')
+plt.ylabel('Correlation')
+plt.axhline(0, color='black', linewidth=0.8)   
+plt.savefig('correlation_summary.png')
