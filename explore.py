@@ -172,8 +172,6 @@ correlations = factors_clean.corr()['won'].drop('won')
 # print(thirddown_summary)
 # print()
 # print("[요인별 승패 상관계수]")
-# print(factors_clean.corr()['won'])
-print(correlations)
 
 # ===== 시각화 =====
 plt.bar(turnovers_summary.index, turnovers_summary['win_rate'])
