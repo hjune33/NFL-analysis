@@ -4,6 +4,7 @@ import pandas as pd
 import sqlite3
 import os
 import matplotlib.pyplot as plt
+from sklearn.linear_model import LogisticRegression
 
 db_exists = os.path.exists('nfl.db')
 conn = sqlite3.connect('nfl.db')
@@ -158,6 +159,16 @@ factors_clean = factors_clean.rename(columns={
 
 correlations = factors_clean.corr()['won'].drop('won')
 
+y = factors_clean['won']
+x = factors_clean.drop(columns='won')
+
+model = LogisticRegression()
+model.fit(x, y)
+accuracy = model.score(x, y)
+
+# print(x.head())
+# print(y.head())
+# print(accuracy)
 # ===== 출력 =====
 # print("[턴오버 영향력]")
 # print(turnovers_summary)
@@ -207,3 +218,4 @@ plt.title('Correlation with Win')
 plt.ylabel('Correlation')
 plt.axhline(0, color='black', linewidth=0.8)   
 plt.savefig('correlation_summary.png')
+
