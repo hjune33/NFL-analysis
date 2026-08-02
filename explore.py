@@ -5,6 +5,7 @@ import sqlite3
 import os
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
 
 db_exists = os.path.exists('nfl.db')
 conn = sqlite3.connect('nfl.db')
@@ -159,30 +160,26 @@ factors_clean = factors_clean.rename(columns={
 
 correlations = factors_clean.corr()['won'].drop('won')
 
+
+# ===== 로지스틱 회귀 (설명 모델) =====
+# 주의: 경기 후 스탯(박스스코어)으로 그 경기 승패를 맞춤 → data leakage
+# 진짜 예측 아님. "요인 기여도 설명"용. 예측 모델은 경기 전 feature로 별도 구축 예정
+
 y = factors_clean['won']
-x = factors_clean.drop(columns='won')
+X = factors_clean.drop(columns='won')
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 model = LogisticRegression()
-model.fit(x, y)
-accuracy = model.score(x, y)
+model.fit(X_train, y_train)
+accuracy = model.score(X_test, y_test)
 
-# print(x.head())
-# print(y.head())
-# print(accuracy)
+
+
 # ===== 출력 =====
-# print("[턴오버 영향력]")
-# print(turnovers_summary)
-# print()
-# print("[패스야드 영향력]")
-# print(passyard_summary)
-# print()
-# print("[페널티 영향력]")
-# print(penalty_summary)
-# print()
-# print("[3rd down 전환율]")
-# print(thirddown_summary)
-# print()
-# print("[요인별 승패 상관계수]")
+print(accuracy)
+print(model.coef_)
+print(X.columns)
 
 # ===== 시각화 =====
 plt.bar(turnovers_summary.index, turnovers_summary['win_rate'])
