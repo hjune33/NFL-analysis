@@ -20,9 +20,7 @@ else:
 
 games = nfl.import_schedules([2024, 2025])
 # 정규시즌만 (플레이오프 제외)
-reg = games[games['game_type'] == 'REG']
-
-
+reg = games[games['game_type'] == 'REG'].copy()
 
 
 # ===== 2. 홈 어드밴티지 =====
@@ -174,12 +172,31 @@ model = LogisticRegression()
 model.fit(X_train, y_train)
 accuracy = model.score(X_test, y_test)
 
+# ===== 경기 전 예측 모델 (schedules 기반) =====
+
+reg['home_win'] = (reg['home_score'] > reg['away_score']).astype(int)
+
+features = ['home_rest', 'away_rest', 'div_game', 'spread_line']
+X_pre = reg[features]
+y_pre = reg['home_win']
+
+# train/test 분리
+X_train_pre, X_test_pre, y_train_pre, y_test_pre = train_test_split(
+    X_pre, y_pre, test_size=0.2, random_state=42)
+
+# 학습
+model_pre = LogisticRegression()
+model_pre.fit(X_train_pre, y_train_pre)
+
+# 평가
+accuracy_pre = model_pre.score(X_test_pre, y_test_pre)
 
 
-# ===== 출력 =====
-print(accuracy)
-print(model.coef_)
-print(X.columns)
+# ===== 결과 출력 =====
+print("설명 모델 (박스스코어, leakage):", accuracy)
+print("예측 모델 (경기 전 정보):", accuracy_pre)
+print("기준선 (홈팀 승률):", reg['home_win'].mean())
+
 
 # ===== 시각화 =====
 plt.bar(turnovers_summary.index, turnovers_summary['win_rate'])
@@ -196,7 +213,7 @@ plt.ylabel('Win Rate')
 plt.savefig('thirddown_winrate.png')
 
 plt.figure()
-plt.bar(passyards_relation.index, passyard_summary['win_rate'])
+plt.bar(passyard_summary.index, passyard_summary['win_rate'])
 plt.title('Passyard vs Win Rate')
 plt.xlabel('Passyards')
 plt.ylabel('Win Rate')
