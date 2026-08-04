@@ -176,25 +176,28 @@ accuracy = model.score(X_test, y_test)
 
 reg['home_win'] = (reg['home_score'] > reg['away_score']).astype(int)
 
-features = ['home_rest', 'away_rest', 'div_game', 'spread_line']
-X_pre = reg[features]
+# 버전 1: 전체 feature (스프레드 포함)
+features_full = ['home_rest', 'away_rest', 'div_game', 'spread_line']
+# 버전 2: 스프레드 제외
+features_no_spread = ['home_rest', 'away_rest', 'div_game']
+
 y_pre = reg['home_win']
 
-# train/test 분리
-X_train_pre, X_test_pre, y_train_pre, y_test_pre = train_test_split(
-    X_pre, y_pre, test_size=0.2, random_state=42)
+def evaluate(features):
+    X = reg[features]
+    X_tr, X_te, y_tr, y_te = train_test_split(X, y_pre, test_size=0.2, random_state=42)
+    m = LogisticRegression()
+    m.fit(X_tr, y_tr)
+    return m.score(X_te, y_te)
 
-# 학습
-model_pre = LogisticRegression()
-model_pre.fit(X_train_pre, y_train_pre)
+print("스프레드 포함:", evaluate(features_full))
+print("스프레드 제외:", evaluate(features_no_spread))
 
-# 평가
-accuracy_pre = model_pre.score(X_test_pre, y_test_pre)
+
 
 
 # ===== 결과 출력 =====
 print("설명 모델 (박스스코어, leakage):", accuracy)
-print("예측 모델 (경기 전 정보):", accuracy_pre)
 print("기준선 (홈팀 승률):", reg['home_win'].mean())
 
 
