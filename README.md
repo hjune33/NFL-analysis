@@ -95,3 +95,8 @@ NFL 경기 승패 요인 분석 프로젝트
 ```bash
 python explore.py
 ```
+
+### 대시보드 실행
+```bash
+streamlit run app.py
+```
