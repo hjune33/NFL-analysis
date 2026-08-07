@@ -49,3 +49,15 @@ with col4:
 with col5:
     st.metric("스프레드 제외", "49%", delta="-18%p", delta_color="inverse")
 st.write("베팅 스프레드를 빼면 정확도가 49%로 급락해 기준선(53.5%)보다도 낮아집니다. 예측력의 대부분이 시장 예측(스프레드)에서 나온 것입니다.")
+
+st.header("턴오버별 승률 조회")
+
+# 턴오버 개수별 승률 (explore.py 분석 결과)
+turnover_win_rates = {0: 72.6, 1: 51.7, 2: 30.0, 3: 14.6}
+
+# 슬라이더로 턴오버 개수 선택
+selected = st.slider("턴오버 개수를 선택하세요", 0, 3, 0)
+
+# 선택한 개수의 승률 표시
+rate = turnover_win_rates[selected]
+st.metric(f"턴오버 {selected}회일 때 승률", f"{rate}%")
