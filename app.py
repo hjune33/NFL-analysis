@@ -61,3 +61,19 @@ selected = st.slider("턴오버 개수를 선택하세요", 0, 3, 0)
 # 선택한 개수의 승률 표시
 rate = turnover_win_rates[selected]
 st.metric(f"턴오버 {selected}회일 때 승률", f"{rate}%")
+
+st.header("요인별 그래프 조회")
+
+# 요인 이름 → 이미지 파일 연결
+factor_images = {
+    "턴오버": "turnover_winrate.png",
+    "3rd Down 전환율": "thirddown_winrate.png",
+    "패스야드": "passyard_winrate.png",
+    "페널티": "penalty_winrate.png"
+}
+
+# 드롭다운으로 요인 선택
+choice = st.selectbox("보고 싶은 요인을 선택하세요", list(factor_images.keys()))
+
+# 선택한 요인의 그래프 표시
+st.image(factor_images[choice])
