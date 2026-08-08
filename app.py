@@ -7,7 +7,8 @@ st.header("홈 어드벤티지")
 st.metric("홈팀 승률", "53.5%")
 st.write("홈 승 291 / 원정 승 252 / 무승부 1 (2024~2025 정규시즌)")
 
-st.header("승패 요인 분석")
+st.header("핵심 승패 요인")
+st.write("승패에 가장 큰 영향을 주는 두 요인입니다. 나머지 요인은 아래 '요인별 그래프 조회'에서 볼 수 있습니다.")
 
 st.subheader("턴오버와 승률")
 st.image("turnover_winrate.png")
@@ -16,14 +17,6 @@ st.write("턴오버가 많을수록 승률이 급락 (0회 72.6% → 3회 14.6%)
 st.subheader("3rd Down 전환율과 승률")
 st.image("thirddown_winrate.png")
 st.write("전환율이 높을수록 승률이 꾸준히 상승")
-
-st.subheader("패스야드와 승률")
-st.image("passyard_winrate.png")
-st.write("패스야드는 승률과 약하게 연결 (지는 팀이 추격하며 패스를 늘리는 영향)")
-
-st.subheader("페널티와 승률")
-st.image("penalty_winrate.png")
-st.write("페널티는 승패와 뚜렷한 관계 없음")
 
 st.header("요인 종합 비교")
 st.image("correlation_summary.png")
@@ -77,3 +70,17 @@ choice = st.selectbox("보고 싶은 요인을 선택하세요", list(factor_ima
 
 # 선택한 요인의 그래프 표시
 st.image(factor_images[choice])
+
+
+st.header("두 요인 비교")
+
+# 왼쪽/오른쪽 각각 요인 선택
+col_left, col_right = st.columns(2)
+
+with col_left:
+    choice_a = st.selectbox("요인 A", list(factor_images.keys()), key="a")
+    st.image(factor_images[choice_a])
+
+with col_right:
+    choice_b = st.selectbox("요인 B", list(factor_images.keys()), key="b", index=1)
+    st.image(factor_images[choice_b])
