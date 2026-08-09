@@ -1,5 +1,7 @@
 import streamlit as st
 
+st.set_page_config(page_title="NFL 승패 분석", page_icon="🏈")
+
 st.title("NFL 승패 요인 분석")
 st.write("NFL 경기 데이터로 승패 요인을 분석하고 예측하는 대시보드입니다.")
 
