@@ -1,13 +1,34 @@
 import streamlit as st
+import pandas as pd
+import nfl_data_py as nfl
+
+@st.cache_data
+def load_data():
+    games = nfl.import_schedules([2024, 2025])
+    reg = games[games['game_type'] == 'REG'].copy()
+    return reg
+
+reg = load_data()
+
 
 st.set_page_config(page_title="NFL 승패 분석", page_icon="🏈")
+
+
 
 st.title("NFL 승패 요인 분석")
 st.write("NFL 경기 데이터로 승패 요인을 분석하고 예측하는 대시보드입니다.")
 
 st.header("홈 어드벤티지")
-st.metric("홈팀 승률", "53.5%")
-st.write("홈 승 291 / 원정 승 252 / 무승부 1 (2024~2025 정규시즌)")
+home_wins = (reg['result'] > 0).sum()
+total_games = len(reg[reg['result'] != 0])   # 무승부 제외
+home_win_rate = home_wins / total_games * 100
+st.metric("홈팀 승률", f"{home_win_rate:.1f}%")
+
+home_w = (reg['result'] > 0).sum()
+away_w = (reg['result'] < 0).sum()
+ties = (reg['result'] == 0).sum()
+st.write(f"홈 승 {home_w} / 원정 승 {away_w} / 무승부 {ties} (2024~2025 정규시즌)")
+
 
 st.header("핵심 승패 요인")
 st.write("승패에 가장 큰 영향을 주는 두 요인입니다. 나머지 요인은 아래 '요인별 그래프 조회'에서 볼 수 있습니다.")
