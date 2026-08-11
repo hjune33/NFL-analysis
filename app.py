@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 import nfl_data_py as nfl
 
+st.set_page_config(page_title="NFL 승패 분석", page_icon="🏈")
+
 @st.cache_data
 def load_data():
     games = nfl.import_schedules([2024, 2025])
@@ -11,7 +13,6 @@ def load_data():
 reg = load_data()
 
 
-st.set_page_config(page_title="NFL 승패 분석", page_icon="🏈")
 
 
 
