@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import nfl_data_py as nfl
 
-st.set_page_config(page_title="NFL 승패 분석", page_icon="🏈")
+st.set_page_config(page_title="NFL 승패 분석", page_icon="🏈", layout="wide")
 
 @st.cache_data
 def load_data():
