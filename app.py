@@ -30,7 +30,7 @@ away_w = (reg['result'] < 0).sum()
 ties = (reg['result'] == 0).sum()
 st.write(f"홈 승 {home_w} / 원정 승 {away_w} / 무승부 {ties} (2024~2025 정규시즌)")
 
-
+st.divider()
 st.header("핵심 승패 요인")
 st.write("승패에 가장 큰 영향을 주는 두 요인입니다. 나머지 요인은 아래 '요인별 그래프 조회'에서 볼 수 있습니다.")
 
@@ -42,10 +42,12 @@ st.subheader("3rd Down 전환율과 승률")
 st.image("thirddown_winrate.png")
 st.write("전환율이 높을수록 승률이 꾸준히 상승")
 
+st.divider()
 st.header("요인 종합 비교")
 st.image("correlation_summary.png")
 st.write("상관계수 기준: 턴오버(-0.40)와 3rd down(+0.26)이 승패에 가장 큰 영향. 패스야드·페널티는 약함")
 
+st.divider()
 st.header("승패 예측 모델")
 st.write("경기 후 스탯으로 '설명'하는 것과, 경기 전 정보로 '예측'하는 것은 다른 문제입니다.")
 
@@ -67,6 +69,7 @@ with col5:
     st.metric("스프레드 제외", "49%", delta="-18%p", delta_color="inverse")
 st.write("베팅 스프레드를 빼면 정확도가 49%로 급락해 기준선(53.5%)보다도 낮아집니다. 예측력의 대부분이 시장 예측(스프레드)에서 나온 것입니다.")
 
+st.divider()
 st.header("턴오버별 승률 조회")
 
 # 턴오버 개수별 승률 (explore.py 분석 결과)
@@ -79,6 +82,7 @@ selected = st.slider("턴오버 개수를 선택하세요", 0, 3, 0)
 rate = turnover_win_rates[selected]
 st.metric(f"턴오버 {selected}회일 때 승률", f"{rate}%")
 
+st.divider()
 st.header("요인별 그래프 조회")
 
 # 요인 이름 → 이미지 파일 연결
@@ -95,7 +99,7 @@ choice = st.selectbox("보고 싶은 요인을 선택하세요", list(factor_ima
 # 선택한 요인의 그래프 표시
 st.image(factor_images[choice])
 
-
+st.divider()
 st.header("두 요인 비교")
 
 # 왼쪽/오른쪽 각각 요인 선택
