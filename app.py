@@ -112,3 +112,7 @@ with col_left:
 with col_right:
     choice_b = st.selectbox("요인 B", list(factor_images.keys()), key="b", index=1)
     st.image(factor_images[choice_b])
+
+
+st.divider()
+st.caption("데이터 출처: nfl_data_py (nflverse) · 2024~2025 정규시즌")
