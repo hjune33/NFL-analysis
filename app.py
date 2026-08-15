@@ -19,7 +19,7 @@ reg = load_data()
 st.title("NFL 승패 요인 분석")
 st.write("NFL 경기 데이터로 승패 요인을 분석하고 예측하는 대시보드입니다.")
 
-st.header("홈 어드벤티지")
+st.header("홈 어드밴티지")
 home_wins = (reg['result'] > 0).sum()
 total_games = len(reg[reg['result'] != 0])   # 무승부 제외
 home_win_rate = home_wins / total_games * 100
