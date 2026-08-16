@@ -36,15 +36,18 @@ st.write("승패에 가장 큰 영향을 주는 두 요인입니다. 나머지 �
 
 st.subheader("턴오버와 승률")
 st.image("turnover_winrate.png")
+st.caption("2025 정규시즌 · 팀-경기 단위 집계")
 st.write("턴오버가 많을수록 승률이 급락 (0회 72.6% → 3회 14.6%)")
 
 st.subheader("3rd Down 전환율과 승률")
 st.image("thirddown_winrate.png")
+st.caption("2025 정규시즌 · 팀-경기 단위 집계")
 st.write("전환율이 높을수록 승률이 꾸준히 상승")
 
 st.divider()
 st.header("요인 종합 비교")
 st.image("correlation_summary.png")
+st.caption("2025 정규시즌 · 4개 요인의 승패 상관계수")
 st.write("상관계수 기준: 턴오버(-0.40)와 3rd down(+0.26)이 승패에 가장 큰 영향. 패스야드·페널티는 약함")
 
 st.divider()
