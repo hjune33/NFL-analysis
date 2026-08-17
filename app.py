@@ -105,6 +105,7 @@ st.image(factor_images[choice])
 
 st.divider()
 st.header("두 요인 비교")
+st.write("두 요인의 그래프를 나란히 놓고 비교할 수 있습니다.")
 
 # 왼쪽/오른쪽 각각 요인 선택
 col_left, col_right = st.columns(2)
