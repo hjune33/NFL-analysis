@@ -18,6 +18,7 @@ reg = load_data()
 
 st.title("NFL 승패 요인 분석")
 st.write("NFL 경기 데이터로 승패 요인을 분석하고 예측하는 대시보드입니다.")
+st.caption("※ 홈 어드밴티지는 2024~2025 시즌, 요인 분석 그래프는 2025 정규시즌 기준입니다.")
 
 st.header("홈 어드밴티지")
 home_wins = (reg['result'] > 0).sum()
