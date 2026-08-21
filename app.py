@@ -91,6 +91,7 @@ st.caption("슬라이더를 움직여 턴오버 개수별 승률을 확인하세
 
 st.divider()
 st.header("요인별 그래프 조회")
+st.write("보고 싶은 요인을 선택하면 해당 그래프가 표시됩니다.")
 
 # 요인 이름 → 이미지 파일 연결
 factor_images = {
