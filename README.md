@@ -2,7 +2,9 @@
 
 nflverse 데이터로 NFL 경기의 승패 요인을 분석하고, 경기 전 정보만으로 승패를 예측하는 모델을 구축하는 프로젝트.
 
+
 **Tech:** Python · nfl_data_py · pandas · scikit-learn · SQLite · Streamlit · matplotlib
+
 
 **핵심 발견: 승패를 가르는 건 턴오버(실책 방지)와 3rd down 전환율. 패스야드·페널티는 생각보다 영향이 작다.**
 
