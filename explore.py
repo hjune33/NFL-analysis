@@ -190,15 +190,8 @@ def evaluate(features):
     m.fit(X_tr, y_tr)
     return m.score(X_te, y_te)
 
-# print("스프레드 포함:", evaluate(features_full))
-# print("스프레드 제외:", evaluate(features_no_spread))
 
 
-
-
-# ===== 결과 출력 =====
-# print("설명 모델 (박스스코어, leakage):", accuracy)
-# print("기준선 (홈팀 승률):", reg['home_win'].mean())
 
 
 # ===== 시각화 =====
