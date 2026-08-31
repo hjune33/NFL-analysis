@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
 import nfl_data_py as nfl
+import sqlite3
+import os
 
 st.set_page_config(page_title="NFL 승패 분석", page_icon="🏈", layout="wide")
 
@@ -8,9 +10,18 @@ st.set_page_config(page_title="NFL 승패 분석", page_icon="🏈", layout="wid
 def load_data():
     games = nfl.import_schedules([2024, 2025])
     reg = games[games['game_type'] == 'REG'].copy()
-    return reg
 
-reg = load_data()
+    db_exists = os.path.exists('nfl.db')
+    conn = sqlite3.connect('nfl.db')
+    if db_exists:
+        pbp = pd.read_sql('SELECT * FROM pbp', conn)
+    else:
+        pbp = nfl.import_pbp_data([2025])
+        pbp.to_sql('pbp', conn, if_exists='replace', index=False)
+        
+    return reg, pbp
+
+reg, pbp = load_data()
 
 
 
