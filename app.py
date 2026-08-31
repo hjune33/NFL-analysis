@@ -18,11 +18,30 @@ def load_data():
     else:
         pbp = nfl.import_pbp_data([2025])
         pbp.to_sql('pbp', conn, if_exists='replace', index=False)
-        
-    return reg, pbp
 
-reg, pbp = load_data()
+    home = reg[['game_id', 'home_team', 'result']].copy()
+    home = home.rename(columns={'home_team': 'team'})
+    home['won'] = home['result'] > 0
 
+    away = reg[['game_id', 'away_team', 'result']].copy()
+    away = away.rename(columns={'away_team': 'team'})
+    away['won'] = away['result'] < 0
+
+    team_results = pd.concat([home, away])
+    
+    turnovers = pbp.groupby(['game_id', 'posteam'])[['fumble_lost', 'interception']].sum()
+    turnovers['total'] = turnovers['fumble_lost'] + turnovers['interception']
+    turnovers = turnovers.reset_index()
+
+    merged_turnover = pd.merge(turnovers, team_results,
+            left_on=['game_id', 'posteam'],
+            right_on=['game_id', 'team'])
+            
+    turnover_win_rates = (merged_turnover.groupby('total')['won'].mean() * 100).to_dict()
+
+    return reg, pbp, turnover_win_rates 
+
+reg, pbp, turnover_win_rates = load_data()
 
 
 
@@ -87,9 +106,6 @@ st.write("베팅 스프레드를 빼면 정확도가 49%로 급락해 기준선(
 
 st.divider()
 st.header("턴오버별 승률 조회")
-
-# 턴오버 개수별 승률 (explore.py 분석 결과)
-turnover_win_rates = {0: 72.6, 1: 51.7, 2: 30.0, 3: 14.6}
 
 # 슬라이더로 턴오버 개수 선택
 selected = st.slider("턴오버 개수를 선택하세요", 0, 3, 0)
