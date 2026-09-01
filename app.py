@@ -112,7 +112,7 @@ selected = st.slider("턴오버 개수를 선택하세요", 0, 3, 0)
 
 # 선택한 개수의 승률 표시
 rate = turnover_win_rates[selected]
-st.metric(f"턴오버 {selected}회일 때 승률", f"{rate}%")
+st.metric(f"턴오버 {selected}회일 때 승률", f"{rate:.1f}%")
 st.caption("슬라이더를 움직여 턴오버 개수별 승률을 확인하세요")
 
 
