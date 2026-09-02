@@ -216,7 +216,7 @@ plt.ylabel('Win Rate')
 plt.savefig('passyard_winrate.png')
 
 plt.figure()
-plt.bar(penalty_relation.index, penalty_summary['win_rate'])
+plt.bar(penalty_summary.index, penalty_summary['win_rate'])
 plt.title('Penalty vs Win Rate')
 plt.xlabel('Penalties')
 plt.ylabel('Win Rate')
