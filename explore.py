@@ -173,7 +173,7 @@ model.fit(X_train, y_train)
 accuracy = model.score(X_test, y_test)
 
 # ===== 경기 전 예측 모델 (schedules 기반) =====
-
+# TODO: feature engineering(시즌 누적·최근 폼·ELO 등)으로 예측 모델 확장 예정.
 reg['home_win'] = (reg['home_score'] > reg['away_score']).astype(int)
 
 # 버전 1: 전체 feature (스프레드 포함)
