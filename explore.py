@@ -13,7 +13,7 @@ conn = sqlite3.connect('nfl.db')
 if db_exists:
     pbp = pd.read_sql('SELECT * FROM pbp', conn)
 else:
-    pbp = nfl.import_pbp_data([2024, 2025])
+    pbp = nfl.import_pbp_data([2023, 2024, 2025])
     pbp.to_sql('pbp', conn, if_exists='replace', index=False)
 
 
