@@ -18,7 +18,7 @@ else:
 
 
 
-games = nfl.import_schedules([2024, 2025])
+games = nfl.import_schedules([2023, 2024, 2025])
 # 정규시즌만 (플레이오프 제외)
 reg = games[games['game_type'] == 'REG'].copy()
 
