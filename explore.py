@@ -32,6 +32,12 @@ team_avg_con_score = reg.groupby('home_team')['away_score'].mean().sort_values(a
 team_margin = (team_avg_score - team_avg_con_score).sort_values(ascending=False)
 team_avg_win = reg[reg['result'] > 0].groupby('home_team').size().sort_values(ascending=False)
 
+print("홈 승:", home_wins)
+print("원정 승:", away_wins)
+print("무승부:", ties)
+print("총 경기:", home_wins + away_wins + ties)
+print("홈 승률:", round(home_wins / (home_wins + away_wins + ties) * 100, 1), "%")
+
 # ===== 3. 팀별 성적표 =====
 team_stats = pd.DataFrame({
     'score': round(team_avg_score, 1),
