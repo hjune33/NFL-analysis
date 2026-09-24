@@ -38,6 +38,16 @@ print("무승부:", ties)
 print("총 경기:", home_wins + away_wins + ties)
 print("홈 승률:", round(home_wins / (home_wins + away_wins + ties) * 100, 1), "%")
 
+print("result 샘플:", reg[['home_score', 'away_score', 'result']].head())
+
+# 홈 승리한 경기들의 평균 점수차 (result가 양수인 경기)
+home_win_margin = reg[reg['result'] > 0]['result'].mean()
+# 홈 패배한 경기들의 평균 점수차 (result가 음수라, 절댓값으로)
+home_loss_margin = reg[reg['result'] < 0]['result'].abs().mean()
+
+print("홈 승리 시 평균 점수차:", round(home_win_margin, 1))
+print("홈 패배 시 평균 점수차:", round(home_loss_margin, 1))
+
 # ===== 3. 팀별 성적표 =====
 team_stats = pd.DataFrame({
     'score': round(team_avg_score, 1),
