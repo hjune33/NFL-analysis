@@ -191,7 +191,7 @@ accuracy = model.score(X_test, y_test)
 # ===== 경기 전 예측 모델 (schedules 기반) =====
 # TODO: feature engineering(시즌 누적·최근 폼·ELO 등)으로 예측 모델 확장 예정.
 reg['home_win'] = (reg['home_score'] > reg['away_score']).astype(int)
-
+print("홈팀 승률(기준선):", round(reg['home_win'].mean() * 100, 1), "%")
 # 버전 1: 전체 feature (스프레드 포함)
 features_full = ['home_rest', 'away_rest', 'div_game', 'spread_line']
 # 버전 2: 스프레드 제외
